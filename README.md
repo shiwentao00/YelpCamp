@@ -1,2 +1,2 @@
 # YelpCamp
-A Yelp-style web APP that displays the camp grounds in the US. It is the milestone course project of [The Web Developer Bootcamp](https://www.udemy.com/course/the-web-developer-bootcamp/) on Udemy.
+A Yelp-style web APP that displays the campgrounds in the US. It is the milestone project of [The Web Developer Bootcamp](https://www.udemy.com/course/the-web-developer-bootcamp/) on Udemy.

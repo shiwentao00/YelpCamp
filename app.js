@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require("mongoose");
 const methodOverride = require('method-override');
 const Campground = require('./models/campground');
+const ejsMate = require('ejs-mate');
 
 // connect method returns a promise
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -30,6 +31,7 @@ db.once('open', () => {
 const app = express();
 
 // set the view engine as EJS
+app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
