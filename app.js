@@ -98,6 +98,11 @@ app.delete('/campgrounds/:id', async (req, res) => {
     res.redirect('/campgrounds');
 })
 
+// define a simple middleware to handle undefined routes
+app.use((req, res) => {
+    res.status(404).send('404 NOT FOUND!');
+}) 
+
 // start the server
 app.listen(8080, () => {
     console.log('Serving on port 8080!');
