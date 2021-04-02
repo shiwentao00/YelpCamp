@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const Campground = require('./models/campground');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError');
 
 // connect method returns a promise
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -101,15 +102,18 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res) => {
     res.redirect('/campgrounds');
 }))
 
-// error handling route
-app.use((err, req, res, next) => {
-    res.send('Ho boy! Something went wrong!');
+// define a simple middleware to handle undefined routes
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404));
 })
 
-// define a simple middleware to handle undefined routes
-app.use((req, res) => {
-    res.status(404).send('404 NOT FOUND!');
-}) 
+// error handling route
+app.use((err, req, res, next) => {
+    const {statusCode=500} = err;
+    if (!err.message) err.message = 'Undefined Error!';
+    res.status(statusCode).render('error', {err});
+})
+
 
 // start the server
 app.listen(8080, () => {
