@@ -7,6 +7,7 @@ const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const { campgroundSchema } = require('./schemas.js');
+const Review = require('./models/review')
 
 // connect method returns a promise
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -39,7 +40,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // tell express to parse the request body of post request
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 // used to override post with patch/put for the edit route
 app.use(methodOverride('_method'));
@@ -87,32 +88,42 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
 // the show route that display a single campground
 app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/show', {campground});
+    res.render('campgrounds/show', { campground });
 }))
 
 // the route that servers a form to edit a campground
 app.get('/campgrounds/:id/edit', catchAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id);
-    res.render('campgrounds/edit', {campground});
+    res.render('campgrounds/edit', { campground });
 }))
 
 // the route that edits an campground entry in the database
 app.put('/campgrounds/:id', validateCampground, catchAsync(async (req, res, next) => {
-    const {id} = req.params;
+    const { id } = req.params;
     // spread the campground object into a new object
     const newCamp = await Campground.findByIdAndUpdate(
-        id, 
-        {...req.body.campground}, 
-        {new: true}
+        id,
+        { ...req.body.campground },
+        { new: true }
     );
     res.redirect(`/campgrounds/${newCamp._id}`);
 }))
 
 // delete route to delete a campground
 app.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
-    const {id} = req.params;
+    const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect('/campgrounds');
+}))
+
+// add a review to a campground
+app.post('/campgrounds/:id/reviews', catchAsync(async (req, res, next) => {
+    const campground = await Campground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    res.redirect(`/campgrounds/${campground._id}`);
 }))
 
 // define a simple middleware to handle undefined routes
@@ -122,9 +133,9 @@ app.all('*', (req, res, next) => {
 
 // error handling route
 app.use((err, req, res, next) => {
-    const {statusCode=500} = err;
+    const { statusCode = 500 } = err;
     if (!err.message) err.message = 'Undefined Error!';
-    res.status(statusCode).render('error', {err});
+    res.status(statusCode).render('error', { err });
 })
 
 
