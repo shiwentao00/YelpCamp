@@ -99,7 +99,7 @@ app.post('/campgrounds', validateCampground, catchAsync(async (req, res, next) =
 
 // the show route that display a single campground
 app.get('/campgrounds/:id', catchAsync(async (req, res, next) => {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findById(req.params.id).populate('reviews');
     res.render('campgrounds/show', { campground });
 }))
 
