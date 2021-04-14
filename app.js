@@ -6,7 +6,7 @@ const Campground = require('./models/campground');
 const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
-const { campgroundSchema } = require('./schemas.js');
+const { campgroundSchema, reviewSchema } = require('./schemas.js');
 const Review = require('./models/review')
 
 // connect method returns a promise
@@ -49,6 +49,18 @@ app.use(methodOverride('_method'));
 // request body
 const validateCampground = (req, res, next) => {
     const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    } else {
+        next();
+    }
+}
+
+// a middleware function used to validate the review
+// request body
+const validateReview = (req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',');
         throw new ExpressError(msg, 400);
@@ -117,7 +129,7 @@ app.delete('/campgrounds/:id', catchAsync(async (req, res, next) => {
 }))
 
 // add a review to a campground
-app.post('/campgrounds/:id/reviews', catchAsync(async (req, res, next) => {
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
     campground.reviews.push(review);
