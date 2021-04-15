@@ -138,6 +138,13 @@ app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res,
     res.redirect(`/campgrounds/${campground._id}`);
 }))
 
+app.delete('/campgrounds/:id/reviews/:reviewID', catchAsync(async (req, res, next) => {
+    const {id, reviewID} = req.params;
+    await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewID}});
+    await Review.findByIdAndDelete(reviewID);
+    res.redirect(`/campgrounds/${id}`);
+}))
+
 // define a simple middleware to handle undefined routes
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
