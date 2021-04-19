@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
+const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
 
 const campgrounds = require('./routes/campgrounds')
@@ -51,6 +52,15 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+app.use(flash());
+
+// for every single request, take whatever in flash,
+// make it accessable under res.
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
 
 // the campground routes
 app.use('/campgrounds', campgrounds);
