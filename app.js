@@ -12,7 +12,9 @@ const reviews = require('./routes/reviews')
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    // get rid of the deprecation warning
+    useFindAndModify: false
 });
 
 const db = mongoose.connection;
@@ -33,6 +35,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // used to override post with patch/put for the edit route
 app.use(methodOverride('_method'));
+
+// serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // the campground routes
 app.use('/campgrounds', campgrounds);
