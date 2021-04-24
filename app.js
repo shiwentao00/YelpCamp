@@ -6,9 +6,13 @@ const ejsMate = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash');
 const ExpressError = require('./utils/ExpressError');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
-const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews')
+const campgroundRoutes = require('./routes/campgrounds');
+const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
 
 // connect method returns a promise
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
@@ -54,19 +58,33 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
-// for every single request, take whatever in flash,
-// make it accessable under res.
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+// how to store and unstore the session
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// this middleware runs for all requests
 app.use((req, res, next) => {
+    // for authentication
+    res.locals.currentUser = req.user;
+    // for every single request, take whatever in flash,
+    // make it accessable under res.
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
 
 // the campground routes
-app.use('/campgrounds', campgrounds);
+app.use('/campgrounds', campgroundRoutes);
 
 // the review routes
-app.use('/campgrounds/:id/reviews', reviews);
+app.use('/campgrounds/:id/reviews', reviewRoutes);
+
+// the user routes
+app.use('/', userRoutes);
 
 // the home page route
 app.get('/', (req, res) => {
