@@ -68,6 +68,9 @@ passport.deserializeUser(User.deserializeUser());
 
 // this middleware runs for all requests
 app.use((req, res, next) => {
+    // res.locals is actually gobal, visible by every template.
+    // see express doc for details.
+
     // for authentication
     res.locals.currentUser = req.user;
     // for every single request, take whatever in flash,
