@@ -45,8 +45,8 @@ module.exports.isAuthor = async (req, res, next) => {
 // a middleware that performs authorization of a review
 module.exports.isReviewAuthor = async (req, res, next) => {
     // the route is /campgrounds/id/reviews/reviewID/
-    const { id, reviewId } = req.params;
-    const review = await Review.findById(reviewId);
+    const { id, reviewID } = req.params;
+    const review = await Review.findById(reviewID);
     if (!review.author.equals(req.user._id)) {
         req.flash('error', 'You do not have the permission to do that!');
         return res.redirect(`/campgrounds/${id}`)
