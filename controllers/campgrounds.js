@@ -37,6 +37,7 @@ module.exports.showCampground = async (req, res, next) => {
         req.flash('error', 'Cannot find this campground!');
         return res.redirect('/campgrounds');
     }
+    // console.log(campground);
     res.render('campgrounds/show', { campground });
 }
 
