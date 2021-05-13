@@ -3,6 +3,9 @@ const router = express.Router();
 const campgrounds = require('../controllers/campgrounds');
 const catchAsync = require('../utils/catchAsync');
 const { isLoggedIn, validateCampground, isAuthor } = require('../middleware');
+const multer = require('multer')
+const {storage} = require('../cloudinary');
+const upload = multer({ storage })
 
 // the index route that shows all campgrounds
 // and
@@ -11,7 +14,7 @@ const { isLoggedIn, validateCampground, isAuthor } = require('../middleware');
 // of the '/campgrounds/new' route)
 router.route('/')
     .get(catchAsync(campgrounds.index))
-    .post(isLoggedIn, validateCampground, catchAsync(campgrounds.createCampground));
+    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
 
 // the new route that used to create a new campground
 // order matters here, the new rout should be put before

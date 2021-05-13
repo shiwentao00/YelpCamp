@@ -9,15 +9,19 @@ module.exports.renderNewForm = (req, res) => {
     res.render('campgrounds/new');
 }
 
-module.exports.createCampground = async (req, res, next) => {
+module.exports.createCampground = async (req, res, next) => {    
     // everything is grouped into campground in the request body
     // in the form
     const campground = new Campground(req.body.campground);
+
+    // map the url and name of the uploaded image into an object
+    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
 
     // link campground with current user
     campground.author = req.user._id;
 
     await campground.save();
+    console.log(campground)
     req.flash('success', 'Successfully made a new campground!');
     res.redirect(`/campgrounds/${campground._id}`);
 }
