@@ -58,13 +58,16 @@ module.exports.renderEditForm = async (req, res, next) => {
 module.exports.updateCampground = async (req, res, next) => {
     const { id } = req.params;
     // spread the campground object into a new object
-    const newCamp = await Campground.findByIdAndUpdate(
+    const campground = await Campground.findByIdAndUpdate(
         id,
         { ...req.body.campground },
         { new: true }
     );
+    const images = req.files.map(f => ({ url: f.path, filename: f.filename }))
+    campground.images.push(...images);
+    await campground.save();
     req.flash('success', 'Successfully updated the campground!');
-    res.redirect(`/campgrounds/${newCamp._id}`);
+    res.redirect(`/campgrounds/${campground._id}`);
 }
 
 module.exports.deleteCampground = async (req, res, next) => {

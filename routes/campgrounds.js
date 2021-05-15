@@ -14,7 +14,12 @@ const upload = multer({ storage })
 // of the '/campgrounds/new' route)
 router.route('/')
     .get(catchAsync(campgrounds.index))
-    .post(isLoggedIn, upload.array('image'), validateCampground, catchAsync(campgrounds.createCampground));
+    .post(
+        isLoggedIn, 
+        upload.array('image'), 
+        validateCampground, 
+        catchAsync(campgrounds.createCampground)
+    );
 
 // the new route that used to create a new campground
 // order matters here, the new rout should be put before
@@ -26,6 +31,7 @@ router.route('/:id')
     .put(
         isLoggedIn,
         isAuthor,
+        upload.array('image'),
         validateCampground,
         catchAsync(campgrounds.updateCampground)
     )
