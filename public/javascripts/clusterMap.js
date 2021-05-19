@@ -71,7 +71,7 @@ map.on('load', function () {
         filter: ['!', ['has', 'point_count']],
         paint: {
             'circle-color': '#11b4da',
-            'circle-radius': 4,
+            'circle-radius': 10,
             'circle-stroke-width': 1,
             'circle-stroke-color': '#fff'
         }
@@ -101,15 +101,8 @@ map.on('load', function () {
     // the location of the feature, with
     // description HTML from its properties.
     map.on('click', 'unclustered-point', function (e) {
-        var coordinates = e.features[0].geometry.coordinates.slice();
-        var mag = e.features[0].properties.mag;
-        var tsunami;
-
-        if (e.features[0].properties.tsunami === 1) {
-            tsunami = 'yes';
-        } else {
-            tsunami = 'no';
-        }
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const { popUpMarkup } = e.features[0].properties;
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -120,9 +113,7 @@ map.on('load', function () {
 
         new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML(
-                'magnitude: ' + mag + '<br>Was there a tsunami?: ' + tsunami
-            )
+            .setHTML(popUpMarkup)
             .addTo(map);
     });
 
