@@ -29,7 +29,7 @@ module.exports.createCampground = async (req, res, next) => {
 
     // map the url and name of the uploaded image into an object
     campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
-
+    
     // link campground with current user
     campground.author = req.user._id;
     console.log(campground)
