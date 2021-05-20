@@ -35,5 +35,8 @@ MAPBOX_TOKEN=<your MapBox token>
 ```  
 
 5. Run mongod in another terminal and node app.js in the terminal with the project.
+```
+node app.js
+```
 
 6. Visit localhost:8080.
