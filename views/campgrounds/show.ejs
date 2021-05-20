@@ -3,7 +3,6 @@
 
 <div class="row">
     <div class="col-6">
-        <div id='map' style='width: 400px; height: 300px;'></div>
         <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <% campground.images.forEach((img, i) => { %>
@@ -23,6 +22,7 @@
                 </button>
             <% } %>
         </div>
+        <div id='map' class="mt-3"></div>
         <div class="card mt-3">
             <div class="card-body">
                 <h5 class="card-title"><%= campground.title %></h5>
