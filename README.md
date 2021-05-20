@@ -14,9 +14,7 @@ This project was based on Node.js, Express, MongoDB, and Bootstrap. Passport.js 
 
 ## Local Demo
 1. Install Mongodb:
-```
-Install mongodb
-```
+
 2. Create a Cloudinary account to get an API key and secret code
 
 3. Create a Mapbox account to get a mapbox token
