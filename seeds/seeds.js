@@ -30,9 +30,10 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async () => {
     // clear all data in the database first
-    await Campground.deleteMany({});
+    // await Campground.deleteMany({});
 
-    for (let i = 0; i < 200; i++){
+    // the random campgrounds to make the cluster-map look better
+    for (let i = 0; i < 300; i++){
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 100 + 100)
         const newCamp = new Campground({
